@@ -36,6 +36,7 @@ Vue.component('inicio', require('./components/inicio.vue').default);
 
 
 Vue.component('medium-editor', MediumEditor);
+Vue.component('editor', require('./components/editorhtml/editor.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
