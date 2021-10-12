@@ -7,9 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  laravel-tests:
+  laravel:
 
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
@@ -26,5 +31,13 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Vue Copile
       run: npm run dev
-        
-    
+      
+      # Node.js release Vue Compile
+      
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm run dev
