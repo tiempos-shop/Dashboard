@@ -12,19 +12,40 @@ class ConfigIndexController extends Controller
         $configUnopcion2Imagenes = $request->opcion2Imagenes;
         
         $SubirImg1 = $configUnopcion2Imagenes["SubirImg1"];
+        $SubirImg2 = $configUnopcion2Imagenes["SubirImg2"];
+        $prefijoOpcion1 = "prefopcion1";
 
+        $ubicacionUno = "img/config/";
+        /*para img 1 */
         $b64 = $SubirImg1["base64"];
         $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
         $type = explode(';', $SubirImg1["base64"])[0];
         $type = explode('/', $type)[1];
         $bin = base64_decode($b64, true);
+        
+        $filename1 = $prefijoOpcion1."uno".".".$type;
+        file_put_contents($ubicacionUno.$filename1, $bin);
 
-        $configUno = new configindex();
+        $configUno = configindex::where('idConfig', 1)->first();
 
-        $filename = "uno".".".$type;
+        $configUno->img1 = $filename1;
 
-        $configUno->img1 = $filename;
+        /*para img 2 */
+        $b64 = $SubirImg2["base64"];
+        $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
+        $type = explode(';', $SubirImg2["base64"])[0];
+        $type = explode('/', $type)[1];
+        $bin = base64_decode($b64, true);
+
+        $filename2 =  $prefijoOpcion1."dos".".".$type;
+        file_put_contents($ubicacionUno.$filename2, $bin);
+
+        $configUno->img2 = $filename2;
+        $configUno->activo = true;
+        $configUno->esYoutube = false;
         $configUno->save();
+
+
 
         return 1;
     }

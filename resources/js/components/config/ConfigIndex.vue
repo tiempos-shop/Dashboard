@@ -123,7 +123,18 @@
       </div>
 
       <div class="m-2">
-          <button class="btn btn-primary" @click="Guardar()">GUARDAR</button>
+          <button class="btn btn-primary" @click="Guardar()">
+              <span v-if="status.enviandoInfo">
+                  <i class="fas fa-circle-notch"  
+                                 spin/> 
+              </span>
+              <span v-else>
+                  GUARDAR
+              </span>
+          </button>
+      </div>
+      <div v-if="status.guardado" class="bg-success p-2 text-white">
+          Guardado!
       </div>
     </div>
   </div>
@@ -143,16 +154,27 @@ export default {
                     extension:'',
                     ruta:''
                 },
+            },
+            status:{
+                enviandoInfo:false,
+                guardado:false,
             }
         }
     },
     methods: {
         async Guardar()
         {
-            await axios.post(this.server + "api/configindex/guardar", this.opcion2Imagenes)
+            this.status.enviandoInfo =  true;
+            const datos = { "opcion2Imagenes" : this.opcion2Imagenes }
+            await axios.post(this.server + "api/configindex/guardar", datos)
             .then((resultado) =>{
-                console.log("resul", resultado);
-            })
+                console.log("resul", resultado.data);
+                if(resultado.data == 1)
+                {
+                    this.status.guardado =  true;
+                }
+            });
+            this.status.enviandoInfo =  false;
         },
         AgregarImagenUno(nombre)
         {

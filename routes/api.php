@@ -58,7 +58,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::post('config/diasdhl', 'ConfiguracionesController@guardarDiasDhl');
     Route::get('config/diasdhl', 'ConfiguracionesController@diasdhl');
 
-    Route::get('configindex/guardar', 'ConfigIndexController@guardarIndex');
+    Route::post('configindex/guardar', 'ConfigIndexController@guardarIndex');
 
     /*Ventas */
     Route::get('ventas/obtener', 'PedidosController@ventasObtener');
