@@ -15,6 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
     'url_shop' => env('URL_SHOP', 'http://localhost/'),
+    'url_confirmacion' => env('URL_CONFIRMACION', 'http://localhost/'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

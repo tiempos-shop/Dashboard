@@ -81,7 +81,8 @@ class LoginController extends Controller
             
 
             $datosCliente = clientes::where([
-                ['CorreoElectronico', '=', $email]
+                ['CorreoElectronico', '=', $email],
+                ['confirmado', '=', '1']
             ])->first();
 
             if (!isset($datosCliente))
@@ -192,6 +193,7 @@ class LoginController extends Controller
         $mostrarErrores = false;
 
         $url_shop = env('URL_SHOP');
+        $url_confirmacion = env('URL_CONFIRMACION');
 
         if (!isset($url_shop))
         {
@@ -324,7 +326,7 @@ class LoginController extends Controller
             $info = new \stdClass();
             $info->name =$name;
             $info->server = $url_shop;
-            $info->claveConfirmacion = $url_shop."confirmation.php?clave=".$claveConfirmacion;
+            $info->claveConfirmacion = $url_confirmacion."confirmation.php?clave=".$claveConfirmacion;
 
             Mail::to($email)->send(new ConfirmacionMail($info));
 
