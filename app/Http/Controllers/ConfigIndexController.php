@@ -16,32 +16,42 @@ class ConfigIndexController extends Controller
         $SubirImg2 = $configUnopcion2Imagenes["SubirImg2"];
         $prefijoOpcion1 = "prefopcion1";
 
+        /*ubicacion para archivos config*/
         $ubicacionUno = "img/config/";
-        /*para img 1 */
-        $b64 = $SubirImg1["base64"];
-        $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
-        $type = explode(';', $SubirImg1["base64"])[0];
-        $type = explode('/', $type)[1];
-        $bin = base64_decode($b64, true);
         
-        $filename1 = $prefijoOpcion1."uno".".".$type;
-        file_put_contents($ubicacionUno.$filename1, $bin);
-
+        /*obteniendo el row de la config 1*/
         $configUno = configindex::where('idConfig', 1)->first();
 
-        $configUno->img1 = $ubicacionUno.$filename1;
+        if (isset($SubirImg1["base64"]))
+        {
+            /*para img 1 */
+            $b64 = $SubirImg1["base64"];
+            $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
+            $type = explode(';', $SubirImg1["base64"])[0];
+            $type = explode('/', $type)[1];
+            $bin = base64_decode($b64, true);
+            
+            $filename1 = $prefijoOpcion1."uno".".".$type;
+            file_put_contents($ubicacionUno.$filename1, $bin);
 
-        /*para img 2 */
-        $b64 = $SubirImg2["base64"];
-        $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
-        $type = explode(';', $SubirImg2["base64"])[0];
-        $type = explode('/', $type)[1];
-        $bin = base64_decode($b64, true);
+            /*estableciendo el nombre del archivo*/
+            $configUno->img1 = $ubicacionUno.$filename1;
+        }
+        
+        if(isset($SubirImg2["base64"]))
+        {
+            /*para img 2 */
+            $b64 = $SubirImg2["base64"];
+            $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
+            $type = explode(';', $SubirImg2["base64"])[0];
+            $type = explode('/', $type)[1];
+            $bin = base64_decode($b64, true);
 
-        $filename2 =  $prefijoOpcion1."dos".".".$type;
-        file_put_contents($ubicacionUno.$filename2, $bin);
-
-        $configUno->img2 = $ubicacionUno.$filename2;
+            $filename2 =  $prefijoOpcion1."dos".".".$type;
+            file_put_contents($ubicacionUno.$filename2, $bin);
+            $configUno->img2 = $ubicacionUno.$filename2;
+        }
+        
         $configUno->activo = true;
         $configUno->esYoutube = false;
         $configUno->save();
@@ -53,8 +63,15 @@ class ConfigIndexController extends Controller
 
     public function obtener()
     {
-        $configuraciones = configuraciones::get();
+        $configuraciones = configindex::get();
+        $appUrl = env("APP_URL");
 
-        return $configuraciones;
+        $appUrl = $appUrl."/";
+
+        $datos = new \stdClass();
+        $datos->appUrl = $appUrl;
+        $datos->configuraciones = $configuraciones;
+
+        return response()->json($datos);
     }
 }
