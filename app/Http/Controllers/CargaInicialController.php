@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\configuraciones;
 use App\monedas;
 use Illuminate\Http\Request;
 
@@ -16,8 +17,10 @@ class CargaInicialController extends Controller
     {
         $monedas = monedas::get();
         $tiendaUrl = env("URL_SHOP");
+        
         $info = [ "monedas" => $monedas, "urltienda" => $tiendaUrl ];
 
+        
         return response()->json($info);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\configuraciones;
 use App\Http\Controllers\EnviosMovimientoController;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $tiendaAdmin = env("APP_URL");
+    $configUrlAdmin = configuraciones::where('idConfiguracion', 1)->first();
+    $configUrlAdmin->valor = $tiendaAdmin;
+    $configUrlAdmin->save();
     return view('principal');
 });
 

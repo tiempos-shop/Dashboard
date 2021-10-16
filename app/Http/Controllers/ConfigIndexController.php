@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\configindex;
+use App\configuraciones;
 use Illuminate\Http\Request;
 
 class ConfigIndexController extends Controller
@@ -28,7 +29,7 @@ class ConfigIndexController extends Controller
 
         $configUno = configindex::where('idConfig', 1)->first();
 
-        $configUno->img1 = $filename1;
+        $configUno->img1 = $ubicacionUno.$filename1;
 
         /*para img 2 */
         $b64 = $SubirImg2["base64"];
@@ -40,7 +41,7 @@ class ConfigIndexController extends Controller
         $filename2 =  $prefijoOpcion1."dos".".".$type;
         file_put_contents($ubicacionUno.$filename2, $bin);
 
-        $configUno->img2 = $filename2;
+        $configUno->img2 = $ubicacionUno.$filename2;
         $configUno->activo = true;
         $configUno->esYoutube = false;
         $configUno->save();
@@ -48,5 +49,12 @@ class ConfigIndexController extends Controller
 
 
         return 1;
+    }
+
+    public function obtener()
+    {
+        $configuraciones = configuraciones::get();
+
+        return $configuraciones;
     }
 }

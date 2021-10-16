@@ -6,7 +6,7 @@
     >
       <div style="margin-top: 50px; text-align: center">
         <h3>Opciones de fondo para página de inicio</h3>
-        <br /><br />
+        
 
         <div class="custom-control custom-switch">
           <input
@@ -18,7 +18,7 @@
             >Dos imágenes en pantalla dividida</label
           >
         </div>
-        <br />
+        
         <div>
             <div class="custom-file" style="display: contents;">
                 <input
@@ -26,10 +26,10 @@
 
                     @change="AgregarImagenUno('SubirImg1')"
                     id="SubirImg1"
-                    accept="image/x-png,image/jpeg" class="custom-file-input mb-2 mt-4 "
+                    accept="image/x-png,image/jpeg" class="custom-file-input mb-2  "
                     style="width:1%"
                     placeholder="Imagen guia de tallas" ref="SubirImg1" >
-                    <label for="SubirImg1" class="mb-4 btn btn-light mt-4" style="margin-top:3rem !important">
+                    <label for="SubirImg1" class="mb-4 btn btn-light " style="margin-top:5px !important">
 
                         <div>Agregar</div>
                         <div class="ml-1">Imagen</div>
@@ -43,10 +43,10 @@
 
                     @change="AgregarImagenUno('SubirImg2')"
                     id="SubirImg2"
-                    accept="image/x-png,image/jpeg" class="custom-file-input mb-2 mt-4 "
+                    accept="image/x-png,image/jpeg" class="custom-file-input mb-2  "
                     style="width:1%"
                     placeholder="Imagen guia de tallas" ref="SubirImg2" >
-                    <label for="SubirImg2" class="mb-4 btn btn-light mt-4" style="margin-top:3rem !important">
+                    <label for="SubirImg2" class="mb-4 btn btn-light " style="margin-top:5px !important">
 
                         <div>Agregar</div>
                         <div class="ml-1">Imagen 2</div>
@@ -79,8 +79,8 @@
        
         </div>
 
-        <br />
-        <br />
+        
+        
 
         <div class="custom-control custom-switch">
           <input
@@ -92,14 +92,14 @@
             >Una imágen en pantalla completa</label
           >
         </div>
-        <br />
+        
         <div>
           <button class="btn btn-light m-2">
             <i class="fas fa-image"></i>
           </button>
         </div>
-        <br />
-        <br />
+        
+        
 
         <div class="custom-control custom-switch">
           <input
@@ -112,21 +112,21 @@
           >
         </div>
 
-        <br />
+        
         <div>
           <button class="btn btn-light m-2">
             <i class="fas fa-video"></i>
           </button>
         </div>
-        <br />
-        <br />
+        
+        
       </div>
 
       <div class="m-2">
           <button class="btn btn-primary" @click="Guardar()">
               <span v-if="status.enviandoInfo">
-                  <i class="fas fa-circle-notch"  
-                                 spin/> 
+                  <i class="fas fa-circle-notch fa-spin"  
+                                 spin /> 
               </span>
               <span v-else>
                   GUARDAR
@@ -164,17 +164,18 @@ export default {
     methods: {
         async Guardar()
         {
+            this.status.guardado = false;
             this.status.enviandoInfo =  true;
             const datos = { "opcion2Imagenes" : this.opcion2Imagenes }
-            await axios.post(this.server + "api/configindex/guardar", datos)
+            /*await axios.post(this.server + "api/configindex/guardar", datos)
             .then((resultado) =>{
                 console.log("resul", resultado.data);
                 if(resultado.data == 1)
                 {
                     this.status.guardado =  true;
                 }
-            });
-            this.status.enviandoInfo =  false;
+            });*/
+            //this.status.enviandoInfo =  false;
         },
         AgregarImagenUno(nombre)
         {

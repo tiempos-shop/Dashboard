@@ -3,8 +3,8 @@
         <h4>Config DHL</h4>
 
         <div class="text-center" v-if="status.cargando">
-            <i class="fas fa-circle-notch"  
-                                 spin/> 
+            <i class="fas fa-circle-notch fa-spin"  
+                                 /> 
             <span>Obteniendo datos</span>
         </div>
         <div style="border: 1px solid black; height: 50%; width: 50%; margin: 0 auto;" class="bg-white" v-if="!status.cargando">
