@@ -11,10 +11,27 @@ class ConfigIndexController extends Controller
     public function guardarIndex(Request $request)
     {
         $configUnopcion2Imagenes = $request->opcion2Imagenes;
+        $configDosOpcion1Imagen = $request->opcion1Imagen;
+        $configOpcionYoutube = $request->opcionYoutube;
         
+        //opcion 1
         $SubirImg1 = $configUnopcion2Imagenes["SubirImg1"];
         $SubirImg2 = $configUnopcion2Imagenes["SubirImg2"];
+        $activoOpcion1 = $configUnopcion2Imagenes["activo"];
+
+        //opcion 2
+        $SubirImg3 = $configDosOpcion1Imagen["SubirImg3"];
+        $activoOpcion2 = $configDosOpcion1Imagen["activo"];
+
+        //opcion 3
+        /*
+        $activoOpcion3 = $configOpcionYoutube["activo"];
+        $urlYoutube = $configOpcionYoutube["url"];
+        $urlValidado = $configOpcionYoutube["validado"];
+        */
+        
         $prefijoOpcion1 = "prefopcion1";
+        $prefijoOpcion2 = "prefopcion2";
 
         /*ubicacion para archivos config*/
         $ubicacionUno = "img/config/";
@@ -51,13 +68,43 @@ class ConfigIndexController extends Controller
             file_put_contents($ubicacionUno.$filename2, $bin);
             $configUno->img2 = $ubicacionUno.$filename2;
         }
-        
-        $configUno->activo = true;
+
+        $configUno->activo = $activoOpcion1;
         $configUno->esYoutube = false;
         $configUno->save();
 
+        /*obteniendo el row de la config 1*/
+        $configDos = configindex::where('idConfig', 2)->first();
 
+        if (isset($SubirImg3["base64"]))
+        {
+            /*para img 1 */
+            $b64 = $SubirImg3["base64"];
+            $b64 = preg_replace('/^data:image\/\w+;base64,/', '', $b64);
+            $type = explode(';', $SubirImg3["base64"])[0];
+            $type = explode('/', $type)[1];
+            $bin = base64_decode($b64, true);
+            
+            $filename1 = $prefijoOpcion2."uno".".".$type;
+            file_put_contents($ubicacionUno.$filename1, $bin);
 
+            /*estableciendo el nombre del archivo*/
+            $configDos->img1 = $ubicacionUno.$filename1;
+        }
+
+        $configDos->activo = $activoOpcion2;
+        $configDos->esYoutube = false;
+        $configDos->save();
+
+        /*
+        if ($urlValidado == true)
+        {
+            $configTres = configindex::where('idConfig', 3)->first();
+            $configTres->img1 = $urlYoutube;
+            $configTres->esYoutube = false;
+            $configTres->save();
+        }
+        */
         return 1;
     }
 
