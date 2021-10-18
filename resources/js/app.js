@@ -10,6 +10,9 @@ require('./bootstrap');
 // main.js
 import Vue from 'vue';
 import VueSweetalert2 from 'vue-sweetalert2';
+import Embed from 'v-video-embed'
+
+Vue.use(Embed);
 
 
 import MediumEditor from 'vuejs-medium-editor';

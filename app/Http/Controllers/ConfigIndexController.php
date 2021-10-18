@@ -24,11 +24,11 @@ class ConfigIndexController extends Controller
         $activoOpcion2 = $configDosOpcion1Imagen["activo"];
 
         //opcion 3
-        /*
+        
         $activoOpcion3 = $configOpcionYoutube["activo"];
         $urlYoutube = $configOpcionYoutube["url"];
-        $urlValidado = $configOpcionYoutube["validado"];
-        */
+        $urlValidado = $configOpcionYoutube["valido"];
+        
         
         $prefijoOpcion1 = "prefopcion1";
         $prefijoOpcion2 = "prefopcion2";
@@ -96,15 +96,16 @@ class ConfigIndexController extends Controller
         $configDos->esYoutube = false;
         $configDos->save();
 
-        /*
+        
         if ($urlValidado == true)
         {
             $configTres = configindex::where('idConfig', 3)->first();
             $configTres->img1 = $urlYoutube;
             $configTres->esYoutube = false;
+            $configTres->activo = $activoOpcion3;
             $configTres->save();
         }
-        */
+        
         return 1;
     }
 

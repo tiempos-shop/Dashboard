@@ -26,6 +26,7 @@
     "dependencies": {
         "@vueup/vue-quill": "^1.0.0-beta.7",
         "apexcharts": "^3.27.3",
+        "v-video-embed": "^1.0.8",
         "vue-sweetalert2": "^5.0.2",
         "vuejs-medium-editor": "^1.2.1"
     }

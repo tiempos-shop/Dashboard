@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      style="border: 1px solid black; width: 80%; margin: 0 auto"
+      style="border: 1px solid black; width: 80%; margin: 0 auto; min-height: 20vh;"
       class="bg-white"
     >
       <div v-if="status.cargandoInfo">
@@ -160,10 +160,37 @@
           </div>
         </div>
 
+
+        <div class="mt-3">
+          <div class="custom-control custom-switch">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="customSwitch3"
+              v-model="opcionYoutube.activo"
+              @change="opcion2Imagenes.activo = false; opcion1Imagen.activo = false;"
+            />
+            <label class="custom-control-label" for="customSwitch3"
+              >Video en tamaño completo</label
+            >
+          </div>
+          <div class="container">
+            <div class="row mb-2">
+              <input type="text" class="form-control col-md-9" v-model="opcionYoutube.urlNuevo" @change="opcionYoutube.valido = false;">
+              <button class="btn col-md-2" :class="opcionYoutube.valido ? 'btn-success' : 'btn-light'" @click="AgregarUrlYoutube()">Validar</button>
+            </div>
+            <div v-if="errores.youtube.length>0" class="text-danger m-1">{{errores.youtube}}</div>
+          </div>
+          <div class="container">
+            <video-embed :src="opcionYoutube.url" v-if="opcionYoutube.verVideo"></video-embed>
+
+          </div>
+          
+        </div>
    
       </div>
 
-      <div class="m-2">
+      <div class="m-2 mt-4">
         <button class="btn btn-primary" @click="Guardar()">
           <span v-if="status.enviandoInfo">
             <i class="fas fa-circle-notch fa-spin" spin />
@@ -207,8 +234,10 @@ export default {
       },
 	  opcionYoutube:{
 		  activo:false,
-		  url:'',
-		  valido:false
+		  url:'https://www.youtube.com/watch?v=s4ObxcdXoFE',
+      urlNuevo:'',
+		  valido:false,
+      verVideo:true,
 	  },
       status: {
         enviandoInfo: false,
@@ -217,6 +246,7 @@ export default {
       },
 	  errores:{
 		  sistema:'',
+      youtube:''
 	  }
     };
   },
@@ -251,18 +281,19 @@ export default {
 
 		/*validar*/
 		this.errores.sistema = "";
-		if (!this.opcion2Imagenes.activo && !this.opcion1Imagen.activo)
+		if (!this.opcion2Imagenes.activo && !this.opcion1Imagen.activo && !this.opcionYoutube.activo)
 		{
 			this.errores.sistema = "Debe estar activo un opcion";
 			return;
 		}
 
-      	this.status.guardado = false;
-      	this.status.enviandoInfo = true;
+		this.status.guardado = false;
+		this.status.enviandoInfo = true;
 
 		const datos = {
 			opcion2Imagenes: this.opcion2Imagenes,
 			opcion1Imagen: this.opcion1Imagen,
+			opcionYoutube: this.opcionYoutube
 		};
 		await axios
 			.post(this.server + "api/configindex/guardar", datos)
@@ -277,14 +308,26 @@ export default {
     },
     AgregarUrlYoutube()
     {
+      this.errores.youtube = "";
+      this.opcionYoutube.verVideo = false;
       var esValido = true;
-      if (this.opcionYoutube.url.length>0)
+      if (this.opcionYoutube.urlNuevo.length == 0)
       {
         esValido = false;
+        this.errores.youtube = "debe ingresar una url de yotutube primero";
       }
-      if (this.opcionYoutube.url.indexOf("https://www.youtube.com") != 0){
+      
+      if (this.opcionYoutube.urlNuevo.indexOf("https://www.youtube.com") != 0){
         esValido = false;
+        this.errores.youtube = "no contiene una url valida";
       }
+      console.log(this.opcionYoutube.urlNuevo.indexOf("https://www.youtube.com"));
+      if (esValido)
+      {
+        this.opcionYoutube.url = this.opcionYoutube.urlNuevo.toString();
+      }
+      this.opcionYoutube.valido = esValido;
+      this.opcionYoutube.verVideo = true;
 
     },
     AgregarImagenUno(nombre) {
