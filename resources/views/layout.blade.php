@@ -11,7 +11,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>TiempoShop</title>
 
            <!-- Custom fonts for this template-->
         <link href="{{asset('css/all.min.css')}}" rel="stylesheet" type="text/css">
