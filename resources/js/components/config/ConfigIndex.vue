@@ -273,6 +273,13 @@ export default {
             this.opcion1Imagen.SubirImg3.ruta = appUrl + config2.img1;
             this.opcion1Imagen.activo =  config2.activo;
           }
+
+		  var config3 = configuraciones.find((opcion) => opcion.idConfig == 3);
+		  if (config3 != null)
+		  {
+			  this.opcionYoutube.urlNuevo = config3.img1;
+			  this.opcionYoutube.url = config3.img1;
+		  }
         });
 
         this.status.cargandoInfo =false;
