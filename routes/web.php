@@ -33,7 +33,7 @@ Route::get('/ventas', function () {
     return view('ventas/ventas');
 });
 Route::get('/ventas/detalle/{id}', function () {
-    return view('ventas/ventasdetalle');
+    return view('ventas/ventasDetalle');
 })->where('id', '[0-9]+');
 
 Route::get('/config/dhl', function () {

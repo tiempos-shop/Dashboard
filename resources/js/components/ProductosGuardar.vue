@@ -15,12 +15,7 @@
         <div class="col-md-9">
             <h5>Producto</h5>
             <div class="container p-3 mb-4  bg-white border">
-                <div class="col-md-12 mt-2">
-                    <div class="mt-3">
-                        <strong>COLECCION</strong>
-                        <input type="text" class="form-control" v-model="producto.coleccion">
-                    </div>
-                </div>
+          
                 <ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="espanol-tab" data-toggle="tab" href="#espanol" role="tab" aria-controls="espanol" aria-selected="true">espanol</a>
@@ -357,10 +352,7 @@
                                 v-bind:src="rutaGuiaTallas.ruta.length > 0 ? rutaGuiaTallas.ruta : rutaGuiaTallas.base64"
                                 alt="imagen de tallas" />
                             <div class="">
-                                <button
-
-                                class="btn-danger btn-sm m-0"
-                                >X</button>
+                           
                             </div>
 
                         </div>
@@ -403,15 +395,6 @@
             <div class="contianer p-2">
                 opciones
 
-                <div class="container bg-white border rounded pb-3 mt-3 pt-2">
-                    <strong>Estado del producto</strong>
-                    <select class="form-select form-select-sm combo" aria-label="Estado">
-
-                        <option value="1">Borrador</option>
-                        <option value="2">Activo</option>
-
-                    </select>
-                </div>
 
                 <div class="container bg-white border rounded pb-3 mt-3 pt-2">
                     <strong class="mb-4 mt-3">Organización</strong>

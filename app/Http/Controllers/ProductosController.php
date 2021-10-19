@@ -148,11 +148,6 @@ class ProductosController extends Controller
                 throw new Exception("no se ingreso el sku del producto");
             }
 
-            if (!isset($datosProducto["coleccion"]))
-            {
-                $mostrarError = true;
-                throw new Exception("no se ingreso la coleccion del producto");
-            }
 
             if (!isset($datosIdioma))
             {
@@ -183,16 +178,7 @@ class ProductosController extends Controller
                 }
             }
 
-            /*Agregando o actualizando colecciones*/
-            $coleccion = colecciones::where('nombre', $datosProducto["coleccion"])->first();
-
-            if (!isset($coleccion))
-            {
-                $coleccion = new colecciones();
-                $coleccion->nombre =$datosProducto["coleccion"];
-                $coleccion->activo =1;
-                $coleccion->save();
-            }
+           
 
             /*agregando tipos*/
             if (isset($datosProducto["tipo"]))
@@ -225,7 +211,7 @@ class ProductosController extends Controller
             $producto->alto = (isset($datosProducto["alto"]) ? $datosProducto["alto"] : 0);
             $producto->ancho = (isset($datosProducto["ancho"]) ? $datosProducto["ancho"] : 0);
             $producto->largo = (isset($datosProducto["largo"]) ? $datosProducto["largo"] : 0);
-            $producto->idColeccion = (isset($coleccion) && isset($coleccion->idColeccion) ? $coleccion->idColeccion : 0);
+            $producto->idColeccion = 0;
             $producto->idTipo = (isset($tipoProducto) && isset($tipoProducto->idTipo) ? $tipoProducto->idTipo : 0);
             $producto->rutaGuiaTallas = "";
             $producto->save();
