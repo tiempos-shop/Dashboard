@@ -403,10 +403,6 @@
                         <input type="text" class="form-control" v-model="producto.tipo">
                     </div>
 
-                    <div class="mt-3">
-                        <strong>Etiquetas</strong>
-                        <input type="text" class="form-control">
-                    </div>
                 </div>
 
                 <div class="container bg-white border rounded pb-3 mt-3 pt-2">
@@ -545,7 +541,7 @@ export default {
 
 
             var index = this.imagenTallas.length;
-
+            this.imagenTallas = [];
 
             this.imagenTallas.push({
                 "file" : this.$refs.imgGuiaTallas.files[0],

@@ -279,6 +279,7 @@ export default {
 		  {
 			  this.opcionYoutube.urlNuevo = config3.img1;
 			  this.opcionYoutube.url = config3.img1;
+        this.opcionYoutube.activo = config3.activo;
 		  }
         });
 

@@ -245,6 +245,10 @@ class ProductosController extends Controller
          
                     file_put_contents($ubicacion.$filename, $bin);
                 }
+                else
+                {
+                    return response('debe agregar base64', 400);
+                }
                 
             }
             else
