@@ -120,3 +120,7 @@ Route::post('correo/prueba', 'CorreoPruebaController@prueba');
 Route::get('/menus', function(){
     return view('menu.menus');
 });
+
+Route::get('/editor', function(){
+    return view('archive.editor');
+});

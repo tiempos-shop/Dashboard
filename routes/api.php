@@ -81,6 +81,8 @@ Route::group(['middleware' => ['cors']], function () {
     Route::resource('menus', 'MenusController');
 
     Route::get('principal/inicio', 'PrincipalController@inicio');
+
+    Route::resource('archivo', 'ArchivoController');
 });
 
 

@@ -15,6 +15,7 @@
 
            <!-- Custom fonts for this template-->
         <link href="{{asset('css/all.min.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{asset('css/editor.css')}}" rel="stylesheet" type="text/css">
         <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
@@ -22,7 +23,12 @@
         <!-- Custom styles for this template-->
         <link href="{{ url('css/sb-admin-2.min.css')}}" rel="stylesheet">
         
-        
+        <style type="text/css">
+            @font-face {
+                font-family: NHaasGroteskDSPro;
+                src: url('{{ asset('fonts/nhaasgroteskdspro65d.tff') }}');
+            }
+        </style>
 
     </head>
     <body>
@@ -165,6 +171,23 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">acciones:</h6>
                         <a class="collapse-item" href="{{ url('menus')}}">Lista de Menus</a>
+                      
+                    </div>
+                </div>
+            </li>
+
+
+            
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#archivePage"
+                    aria-expanded="true" aria-controls="archivePage">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Archive</span>
+                </a>
+                <div id="archivePage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">acciones:</h6>
+                        <a class="collapse-item" href="{{ url('editor')}}">Editor</a>
                       
                     </div>
                 </div>
