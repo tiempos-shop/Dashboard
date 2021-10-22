@@ -64,6 +64,18 @@ class ProductosController extends Controller
        
         return response()->json($productos);
     }
+
+    public function imagenesproductos()
+    {
+        $imagenes = productoimagenes::select('idImagen','idProducto', 'ruta')->get();
+        
+        foreach ($imagenes as $imagen) {
+            $imagen->base64 = "";
+            $imagen->ruta = url('/').'/'.$imagen->ruta;
+        }
+
+        return $imagenes;
+    }
     public function productostienda()
     {
         /*para busqueda en los productos en tienda */

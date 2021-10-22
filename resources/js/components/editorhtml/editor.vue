@@ -1,58 +1,36 @@
 <template>
     <div class="container">
-    
+        
+        <modal-imagenes @cerrar="status.verModalImagenes = false" @imagen="AgregarElementoTexto('imgprod', $event)" v-if="status.verModalImagenes"></modal-imagenes>
 
 
         <div class="row" id="app">
-            <div class="col-md-3 p-4">
-                <div class="btn-group dropleft p-1"  >
-                        <button
-                            class="btn bg-white border shadow-sm rounded  p-2 "
-                            :id="'dropPrincipalM'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            >
-                            <span >
-                                <i class="fas fa-ellipsis-h"></i>
-                            </span>
-                        </button>
-                        <div class="dropdown-menu p-3" 
-                            :aria-labelledby="'dropPrincipalM'">
-                            <div class="text-muted">Opciones</div>
-
-                            <button @click="AgregarElementoTexto('p')"
-                                class="dropdown-item  mb-2 pr-4 " >
-                                <span class="pr-2" style="color:Tomato">
-                                    <i class="fas fa-power-off"></i>
-                                </span>
-                                <strong class="text-center p-0 m-0">Texto</strong>
-                                
-                            </button>
-
-                            <button   @click="AgregarElementoTexto('img')"
-                                class=" btn   mb-2   dropdown-item"  
-                                >
-                                <span class="pr-2 " style="color:gray">
-                                    <i class="fas fa-pause"></i>
-                                </span>
-                                <strong > 
-                                    Imagen
-                                </strong>
-                            </button>
-
-                            <button @click="AgregarElementoTexto('youtube')"
-                                class="dropdown-item mb-1  text-center"  
-                                style="color:green"
-                                >
-                                <span  class="pr-2"> 
-                                    <i class="fas fa-chevron-circle-right" >  </i>
-                                </span>
-                                <strong class="text-dark">Youtube</strong>
-                            </button>
-
-                        </div>
-                </div>
+            <div class="col-md-12">
+                <small class="text-muted">Seleccione una opcion para agregar</small>
             </div>
-            <div class="col-md-3">
-                <div class="custom-file" style="display: contents">
+            <div class="col-md-2">
+                <button @click="AgregarElementoTexto('p')"
+                    class="btn bg-white " >
+                    <span class="pr-2" style="color:Tomato">
+                        <i class="fas fa-italic"></i>
+                    </span>
+                    <strong class="text-center p-0 m-0">Texto</strong>
+                    
+                </button>
+            </div>
+            <div class="col-md-2">
+                <button @click="AgregarElementoTexto('youtube')"
+                    class="btn bg-white"  
+                    style="color:green"
+                    >
+                    <span  class="pr-2"> 
+                        <i class="fas fa-video" >  </i>
+                    </span>
+                    <strong class="text-dark">Youtube</strong>
+                </button>
+            </div>
+            <div class="col-md-2">
+                <div class="custom-file bg-white" style="display: contents">
                     <input
                     type="file"
                     @change="AgregarImagen('SubirImg1')"
@@ -65,21 +43,22 @@
                     />
                     <label
                     for="SubirImg1"
-                    class="mb-4 btn btn-light"
-                    style="margin-top: 5px !important"
+                    class=" btn bg-white"
                     >
-                    <div>Agregar</div>
-                    <div class="ml-1">Imagen</div>
-                    <i class="fas fa-images"></i>
+                    <div class="ml-1"><i class="fas fa-images"></i> <span class="ml-1 text-dark">Imagen</span></div>
+                    
                     </label>
                 </div>
             </div>
-            <div class="col-md-6">
-                <button class="btn btn-primary" @click="GuardarArchive()">GUARDAR</button>
+            <div class="col-md-2">
+                <button class="btn bg-white" @click="status.verModalImagenes = true">Imagenes Productos</button>
             </div>
-            <div class="col-md-8 bg-light text-dark" id="contenedor" style="min-height:20px;">
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-block" @click="GuardarArchive()">GUARDAR</button>
+            </div>
+            <div class="col-md-8 bg-light text-dark mt-4" id="contenedor" style="min-height:20px;">
                 
-                <div v-for="(item, index) in elementos" class="bg-white border p-1" :key="index" :index="'el' + index" >
+                <div v-for="(item, index) in elementos" class="bg-white  p-1" :key="index" :index="'el' + index" >
                     
                     <div :id="'elemento' +  item.id" v-if="!item.eliminar">
                         <div v-if="item.tipo =='p'">
@@ -106,10 +85,10 @@
                 </div>
                 
             </div>
-            <div class="col-md-4" >
+            <div class="col-md-4 mt-4" >
                 <div v-for="(item, index) in elementos" :key="index" >
                     <div :id="'divborrar' + item.id" v-if="!item.eliminar">
-                        <button class="btn btn-danger" :id="'borrar' + index" :ref="'borrar' + index"  @click="item.eliminar = true;">Borrar</button>
+                        <button class="btn btn-danger p-1 m-0" :id="'borrar' + item.id" :ref="'borrar' + index"  @click="item.eliminar = true;">Borrar</button>
                     </div>
                     
  
@@ -123,13 +102,19 @@
 
 import Quill from '../../../../public/js/quill.js';
 import  '../../../../public/css/quill.snow.css';
+import ModalImagenes from './ModalImagenes.vue';
 
 export default {
     data() {
         return {
             elementos:[],
-
+            status:{
+                verModalImagenes:false
+            }
         }
+    },
+    components : {
+        ModalImagenes
     },
     methods: {
         async AgregarImagen(nombre)
@@ -198,9 +183,18 @@ export default {
             .then((resultado) => {
                 console.log("resultado", resultado.data);
                 var datos = resultado.data;
-
+                var minimoAlto = 0;
                 datos.forEach(element => {
-                    this.elementos.push({id: element.id, html:element.html, tipo:element.tipo, eliminar:false})
+                    this.elementos.push({id: element.id, html:element.html, tipo:element.tipo, eliminar:false});
+                    
+                    this.$nextTick(()=>{
+                        var dom = document.getElementById('elemento' + element.id);
+                        minimoAlto = dom.clientHeight;
+                        var divborrar = document.getElementById('divborrar'+ element.id);
+                        divborrar.style.minHeight = minimoAlto + 5 + 'px';
+
+                        console.log(dom.clientHeight); 
+                    });
                 });
             })
         },
@@ -215,7 +209,7 @@ export default {
                 console.log("resultado", resultado.data);
             })
         },
-        async AgregarElementoTexto(tipo)
+        async AgregarElementoTexto(tipo, imagen)
         {
             if (tipo == "p")
             {
@@ -244,6 +238,24 @@ export default {
             if (tipo == "img")
             {
 
+            }
+
+            if (tipo == "imgprod")
+            {
+                var index = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
+                index = index + 1;
+
+                this.elementos.push({id:index, html:'', tipo:'img', base64:'', ruta: imagen.ruta , eliminar:false});
+                this.status.verModalImagenes = false;
+                var minimoAlto = 0;
+                this.$nextTick(()=>{
+                    var dom = document.getElementById('elemento' + index);
+                    minimoAlto = dom.clientHeight;
+                    var divborrar = document.getElementById('divborrar'+ index);
+                    divborrar.style.minHeight = minimoAlto + 5 + 'px';
+
+                    console.log(dom.clientHeight); 
+                });
             }
             
             

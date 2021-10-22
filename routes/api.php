@@ -41,6 +41,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::resource('/productos', 'ProductosController');
     Route::get('/productostienda', 'ProductosController@productostienda');
     Route::post('/productostiendabusqueda', 'ProductosController@productostiendabusqueda');
+    Route::get('/imagenesproductos', 'ProductosController@imagenesproductos');
 
 
     Route::get('pedido/porcliente/{idcliente}', 'PedidosController@porcliente')->where('idcliente', '[0-9]+');
