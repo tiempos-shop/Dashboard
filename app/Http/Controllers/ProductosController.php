@@ -72,6 +72,7 @@ class ProductosController extends Controller
         foreach ($imagenes as $imagen) {
             $imagen->base64 = "";
             $imagen->ruta = url('/').'/'.$imagen->ruta;
+            $imagen->rutaserver = $imagen->ruta;
         }
 
         return $imagenes;

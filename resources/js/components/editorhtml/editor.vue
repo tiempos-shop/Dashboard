@@ -88,6 +88,7 @@
             <div class="col-md-4 mt-4" >
                 <div v-for="(item, index) in elementos" :key="index" >
                     <div :id="'divborrar' + item.id" v-if="!item.eliminar">
+                        <button class="btn btn-primary p-1 m-0" :id="'editar' + item.id" :ref="'editar' + index"  @click="EditarElemento(item.id, index)">Editar</button>
                         <button class="btn btn-danger p-1 m-0" :id="'borrar' + item.id" :ref="'borrar' + index"  @click="item.eliminar = true;">Borrar</button>
                     </div>
                     
@@ -117,6 +118,39 @@ export default {
         ModalImagenes
     },
     methods: {
+        async EditarElemento(id, indexElemento)
+        {
+            var elemento = this.elementos.find((ele) => ele.id == id);
+            var tipo = null;
+            if (elemento != null)
+            {
+                tipo = elemento.tipo;
+            }
+
+            if (tipo == "p")
+            {
+                var resp = await this.MostrarModal(elemento.html);
+
+                if (resp != null)
+                {
+                    //var index = this.elementos.length;
+                    var index = id;
+                    var minimoAlto = 0;
+                    var registro = {id:id, html:resp, tipo:'p', eliminar:false, idGuardado:id};
+                    this.$set(this.elementos, indexElemento, registro);
+                    
+                    this.$nextTick(()=>{
+                        var dom = document.getElementById('elemento' + index);
+                        minimoAlto = dom.clientHeight;
+                        var divborrar = document.getElementById('divborrar'+ index);
+                        divborrar.style.minHeight = minimoAlto + 5 + 'px';
+
+                        console.log(dom.clientHeight); 
+                    });
+                    
+                }
+            }
+        },
         async AgregarImagen(nombre)
         {
             var archivo = null;
@@ -136,7 +170,7 @@ export default {
                 return new Promise(resolve => {
                 reader.onload = ev => {
                     resolve(
-                        appli.elementos.push({id:index, html:'', tipo:'img', base64:ev.target.result, ruta: '', eliminar:false})
+                        appli.elementos.push({id:index, html:'', tipo:'img', base64:ev.target.result, ruta: '', rutaserver:'', eliminar:false, idGuardado : 0})
                     )
                 }
                 reader.readAsDataURL(file)
@@ -161,20 +195,6 @@ export default {
             console.log(dom.clientHeight); 
 
             return 1;
-
-            reader.onload = function (event) {
-                console.log("onload");
-
-                //generando base64
-                appli.elementos.push({id:index, html:'', tipo:'img', base64:event.target.result, ruta: '', eliminar:false});
-                
-            };
-
-            reader.readAsDataURL(archivo);
-
-           
-
-            console.log("nombre", nombre);
             
         },
         async ObtenerArchive()
@@ -185,7 +205,17 @@ export default {
                 var datos = resultado.data;
                 var minimoAlto = 0;
                 datos.forEach(element => {
-                    this.elementos.push({id: element.id, html:element.html, tipo:element.tipo, eliminar:false});
+
+                    if (element.tipo =="p")
+                    {
+                        this.elementos.push({id: element.id, html:element.html, tipo:element.tipo, eliminar:false, idGuardado : element.id});
+                    }
+                    
+                    if (element.tipo == "img")
+                    {
+                        this.elementos.push({id: element.id, ruta:element.html, rutaserver:element.rutaserver, tipo:element.tipo, eliminar:false, idGuardado : element.id});
+                    }
+                    
                     
                     this.$nextTick(()=>{
                         var dom = document.getElementById('elemento' + element.id);
@@ -222,7 +252,7 @@ export default {
                     index = index + 1;
                     var minimoAlto = 0;
 
-                    this.elementos.push({id:index, html:resp, tipo:tipo, eliminar:false});
+                    this.elementos.push({id:index, html:resp, tipo:tipo, eliminar:false, idGuardado:0});
                     this.$nextTick(()=>{
                         var dom = document.getElementById('elemento' + index);
                         minimoAlto = dom.clientHeight;
@@ -245,7 +275,7 @@ export default {
                 var index = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
                 index = index + 1;
 
-                this.elementos.push({id:index, html:'', tipo:'img', base64:'', ruta: imagen.ruta , eliminar:false});
+                this.elementos.push({id:index, html:'', tipo:'img', base64:'', ruta: imagen.ruta , rutaserver: imagen.rutaserver, eliminar:false, idGuardado:0});
                 this.status.verModalImagenes = false;
                 var minimoAlto = 0;
                 this.$nextTick(()=>{
@@ -287,12 +317,12 @@ export default {
 
             return 100;
         },
-        async MostrarModal()
+        async MostrarModal(cuerpoHtml = "")
         {
             
             var respuestaTexto =  this.$swal.fire({
                 title : 'Texto',
-                html: '<div id="editorTexto"></div>',
+                html: '<div id="editorTexto">' + cuerpoHtml + '</div>',
                 width: '70%'
             });
 

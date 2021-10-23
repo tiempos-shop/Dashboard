@@ -40,10 +40,50 @@ class ArchivoController extends Controller
         $datos = $request->elementos;
 
         foreach ($datos as $info) {
-            $archivoBD = new archivo();
-            $archivoBD->html =  $info["html"];
-            $archivoBD->tipo =  $info["tipo"];  
-            $archivoBD->save(); 
+            $archivoBD = null;
+
+            /*se crea un elemento o se busca el actual*/
+            if ($info["idGuardado"] == 0)
+            {
+                $archivoBD = new archivo();
+            }
+            else
+            {
+                $archivoBD = archivo::where('id',$info["idGuardado"])->first();
+            }
+
+            /*se guardara si es falso*/
+            if ($info["eliminar"] == false)
+            {
+                
+
+                if ($archivoBD == null)
+                {
+                    return response('no se encontro el registro de archivo anterior', 400);
+                }
+
+                if ($info["tipo"] == "img")
+                {
+                    $rutaImg =  $info["ruta"];
+                    $archivoBD->html = $rutaImg;
+                    $archivoBD->rutaserver = $info["rutaserver"];
+                    $archivoBD->tipo =  $info["tipo"];  
+                }
+                if ($info["tipo"] == "p")
+                {
+                    $archivoBD->html =  $info["html"];
+                    $archivoBD->tipo =  $info["tipo"];      
+                }
+
+
+                $archivoBD->save(); 
+            }
+            if ($info["eliminar"] == true)
+            {
+                $archivoBD->delete();
+            }
+            
+            
         }
 
         return 1;
