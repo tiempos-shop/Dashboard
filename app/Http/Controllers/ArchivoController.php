@@ -62,7 +62,7 @@ class ArchivoController extends Controller
                     return response('no se encontro el registro de archivo anterior', 400);
                 }
 
-                if ($info["tipo"] == "img")
+                if ($info["tipo"] == "img" || $info["tipo"] == "imgprod")
                 {
                     $rutaImg =  $info["ruta"];
                     $archivoBD->html = $rutaImg;

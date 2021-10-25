@@ -3,58 +3,90 @@
         
         <modal-imagenes @cerrar="status.verModalImagenes = false" @imagen="AgregarElementoTexto('imgprod', $event)" v-if="status.verModalImagenes"></modal-imagenes>
 
+        <div v-if="status.cargandoInfo">
+            <i class="fas fa-circle-notch fa-spin" spin />
+            <span class="ml-2">Cargando configuración</span>
+        </div>
 
-        <div class="row" id="app">
+        <div class="row" v-if="!status.cargandoInfo">
+            
             <div class="col-md-12">
                 <small class="text-muted">Seleccione una opcion para agregar</small>
             </div>
-            <div class="col-md-2">
-                <button @click="AgregarElementoTexto('p')"
-                    class="btn bg-white " >
-                    <span class="pr-2" style="color:Tomato">
-                        <i class="fas fa-italic"></i>
-                    </span>
-                    <strong class="text-center p-0 m-0">Texto</strong>
-                    
-                </button>
+            <div class="row col-md-8" >
+                <div class="col-md-2">
+                    <button @click="AgregarElementoTexto('p')"
+                        class="btn bg-white " >
+                        <span class="pr-2" style="color:Tomato">
+                            <i class="fas fa-italic"></i>
+                        </span>
+                        <strong class="text-center p-0 m-0">Texto</strong>
+                        
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button @click="AgregarElementoTexto('youtube')"
+                        class="btn bg-white"  
+                        style="color:green"
+                        >
+                        <span  class="pr-2"> 
+                            <i class="fas fa-video" >  </i>
+                        </span>
+                        <strong class="text-dark">Youtube</strong>
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <div class="custom-file bg-white" style="display: contents">
+                        <input
+                        type="file"
+                        @change="AgregarImagen('SubirImg1')"
+                        id="SubirImg1"
+                        accept="image/x-png,image/jpeg"
+                        class="custom-file-input mb-2 bg-white"
+                        style="width: 1%"
+                        placeholder="Imagen guia de tallas"
+                        ref="SubirImg1"
+                        />
+                        <label
+                        for="SubirImg1"
+                        class=" btn bg-white"
+                        >
+                        <div class="ml-1"><i class="fas fa-images"></i> <span class="ml-1 text-dark">Imagen</span></div>
+                        
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn bg-white" @click="status.verModalImagenes = true">Imagenes Productos</button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn bg-white">
+                        Texto Sección
+                    </button>
+                </div>
             </div>
-            <div class="col-md-2">
-                <button @click="AgregarElementoTexto('youtube')"
-                    class="btn bg-white"  
-                    style="color:green"
-                    >
-                    <span  class="pr-2"> 
-                        <i class="fas fa-video" >  </i>
-                    </span>
-                    <strong class="text-dark">Youtube</strong>
-                </button>
+            <div class="col-md-8 p-2 row">
+                <input type="text" class="form-control col-md-8" v-model="seccion" v-on:input="seccion =seccion.toUpperCase()" placeholder="Agregar Texto de Sección">
+                <button class="btn btn-primary"  @click="AgregarSeccion()">Agregar</button>
             </div>
-            <div class="col-md-2">
-                <div class="custom-file bg-white" style="display: contents">
-                    <input
-                    type="file"
-                    @change="AgregarImagen('SubirImg1')"
-                    id="SubirImg1"
-                    accept="image/x-png,image/jpeg"
-                    class="custom-file-input mb-2 bg-white"
-                    style="width: 1%"
-                    placeholder="Imagen guia de tallas"
-                    ref="SubirImg1"
-                    />
-                    <label
-                    for="SubirImg1"
-                    class=" btn bg-white"
-                    >
-                    <div class="ml-1"><i class="fas fa-images"></i> <span class="ml-1 text-dark">Imagen</span></div>
-                    
-                    </label>
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-block" @click="GuardarArchive()"
+                    :disabled="status.guardandoInfo" :class="status.guardado ? 'btn-success' : 'btn-primary'"
+                    >GUARDAR</button>
+
+                <div v-if="errores.sistema.length > 0" class="text-danger p-1">
+                    {{errores.sistema}}
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn bg-white" @click="status.verModalImagenes = true">Imagenes Productos</button>
-            </div>
-            <div class="col-md-4">
-                <button class="btn btn-primary btn-block" @click="GuardarArchive()">GUARDAR</button>
+                <div id="t" style="position: fixed;top: 50vh;">
+                    <div v-for="(item, index) in elementos" class="bg-white  p-1" :key="index" :index="'men' + index" >
+                        <div v-if="item.tipo == 'sec'">
+                            <span style="border-top: 1px solid black; border-bottom: 1px solid black;">{{item.html}}</span>
+                        </div>
+                    </div>                 
+                </div>
+   
             </div>
             <div class="col-md-8 bg-light text-dark mt-4" id="contenedor" style="min-height:20px;">
                 
@@ -65,7 +97,7 @@
                             <div v-html="item.html"></div>
                             
                         </div>
-                        <div v-if="item.tipo == 'img'">
+                        <div v-if="item.tipo == 'img' || item.tipo == 'imgprod'">
                             <img
                                 class="img-thumbnail"
                                 v-if="
@@ -80,12 +112,16 @@
                                 "
                                 alt="imagen" />
                         </div>
+
+                        <div v-if="item.tipo == 'sec'">
+                            <span style="border-top: 1px solid black; border-bottom: 1px solid black;">{{item.html}}</span>
+                        </div>
                     </div>
                     
                 </div>
                 
             </div>
-            <div class="col-md-4 mt-4" >
+            <div class="col-md-2 mt-4" >
                 <div v-for="(item, index) in elementos" :key="index" >
                     <div :id="'divborrar' + item.id" v-if="!item.eliminar">
                         <button class="btn btn-primary p-1 m-0" :id="'editar' + item.id" :ref="'editar' + index"  @click="EditarElemento(item.id, index)">Editar</button>
@@ -110,7 +146,15 @@ export default {
         return {
             elementos:[],
             status:{
-                verModalImagenes:false
+                cargandoInfo:true,
+                verModalImagenes:false,
+                enviandoInfo:false,
+                guardado:false,
+                guardandoInfo:false
+            },
+            seccion:'',
+            errores:{
+                sistema:'',
             }
         }
     },
@@ -118,6 +162,16 @@ export default {
         ModalImagenes
     },
     methods: {
+        AgregarSeccion()
+        {
+            if (this.seccion.length == 0)
+            {
+                return;
+            }
+            var id = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
+            id = id + 1;
+            this.elementos.push( {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:id});
+        },
         async EditarElemento(id, indexElemento)
         {
             var elemento = this.elementos.find((ele) => ele.id == id);
@@ -199,6 +253,8 @@ export default {
         },
         async ObtenerArchive()
         {
+            this.status.cargandoInfo = true;
+
             await axios.get(this.server + "api/archivo")
             .then((resultado) => {
                 console.log("resultado", resultado.data);
@@ -216,20 +272,19 @@ export default {
                         this.elementos.push({id: element.id, ruta:element.html, rutaserver:element.rutaserver, tipo:element.tipo, eliminar:false, idGuardado : element.id});
                     }
                     
-                    
-                    this.$nextTick(()=>{
-                        var dom = document.getElementById('elemento' + element.id);
-                        minimoAlto = dom.clientHeight;
-                        var divborrar = document.getElementById('divborrar'+ element.id);
-                        divborrar.style.minHeight = minimoAlto + 5 + 'px';
-
-                        console.log(dom.clientHeight); 
-                    });
                 });
-            })
+
+                
+            });
+
+            
+
+            this.status.cargandoInfo = false;
         },
         async GuardarArchive()
         {
+            this.status.guardandoInfo = true;
+
             var html = document.getElementById('contenedor').innerHTML;
             console.log(html);
 
@@ -237,7 +292,17 @@ export default {
             await axios.post(this.server + "api/archivo",  datos)
             .then((resultado) => {
                 console.log("resultado", resultado.data);
-            })
+                if (resultado.data == 1)
+                {
+                    this.status.guardado = true;
+                }
+            }).catch((problema) => {
+                console.log(problema);
+                this.errores.sistema = false;
+            });
+
+            this.status.guardandoInfo = false;
+            
         },
         async AgregarElementoTexto(tipo, imagen)
         {
@@ -275,7 +340,7 @@ export default {
                 var index = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
                 index = index + 1;
 
-                this.elementos.push({id:index, html:'', tipo:'img', base64:'', ruta: imagen.ruta , rutaserver: imagen.rutaserver, eliminar:false, idGuardado:0});
+                this.elementos.push({id:index, html:'', tipo:tipo, base64:'', ruta: imagen.ruta , rutaserver: imagen.rutaserver, eliminar:false, idGuardado:0});
                 this.status.verModalImagenes = false;
                 var minimoAlto = 0;
                 this.$nextTick(()=>{
@@ -342,8 +407,19 @@ export default {
         },
         
     },
-    mounted() {
-        this.ObtenerArchive();
+    async mounted() {
+        await this.ObtenerArchive();
+        var minimoAlto = 0;
+        this.$nextTick(()=>{
+            this.elementos.forEach(element => {
+                console.log('elemento' +  element.id)
+                var dom = document.getElementById('elemento' + element.id);
+                console.log("docum", dom);
+                minimoAlto = dom.clientHeight;
+                var divborrar = document.getElementById('divborrar'+ element.id);
+                divborrar.style.minHeight = minimoAlto + 5 + 'px';
+            });
+        });
     },
 }
 </script>

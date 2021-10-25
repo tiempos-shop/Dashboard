@@ -70,9 +70,10 @@ class ProductosController extends Controller
         $imagenes = productoimagenes::select('idImagen','idProducto', 'ruta')->get();
         
         foreach ($imagenes as $imagen) {
+            $ruta =$imagen->ruta;
             $imagen->base64 = "";
-            $imagen->ruta = url('/').'/'.$imagen->ruta;
-            $imagen->rutaserver = $imagen->ruta;
+            $imagen->ruta = url('/').'/'.$ruta;
+            $imagen->rutaserver = $ruta;
         }
 
         return $imagenes;
