@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         
         <modal-imagenes @cerrar="status.verModalImagenes = false" @imagen="AgregarElementoTexto('imgprod', $event)" v-if="status.verModalImagenes"></modal-imagenes>
 
@@ -36,14 +36,14 @@
                     </button>
                 </div>
                 <div class="col-md-2">
-                    <div class="custom-file bg-white" style="display: contents">
+                    <div class="custom-file bg-white" style="display: contents; ">
                         <input
                         type="file"
                         @change="AgregarImagen('SubirImg1')"
                         id="SubirImg1"
                         accept="image/x-png,image/jpeg"
                         class="custom-file-input mb-2 bg-white"
-                        style="width: 1%"
+                        style="width: 1%; height: 0 !important; "
                         placeholder="Imagen guia de tallas"
                         ref="SubirImg1"
                         />
@@ -60,13 +60,13 @@
                     <button class="btn bg-white" @click="status.verModalImagenes = true">Imagenes Productos</button>
                 </div>
                 <div class="col-md-3">
-                    <button class="btn bg-white">
+                    <button class="btn bg-white" @click="status.verSeccion = true;">
                         Texto Sección
                     </button>
                 </div>
             </div>
-            <div class="col-md-8 p-2 row">
-                <input type="text" class="form-control col-md-8" v-model="seccion" v-on:input="seccion =seccion.toUpperCase()" placeholder="Agregar Texto de Sección">
+            <div class="col-md-8 p-2 row" v-if="status.verSeccion">
+                <input type="text" class="form-control col-md-8" v-model="seccion" maxlength="15" v-on:input="seccion =seccion.toUpperCase()" placeholder="Agregar Texto de Sección">
                 <button class="btn btn-primary"  @click="AgregarSeccion()">Agregar</button>
             </div>
             <div class="col-md-4">
@@ -78,7 +78,7 @@
                     {{errores.sistema}}
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div id="t" style="position: fixed;top: 50vh;">
                     <div v-for="(item, index) in elementos" class="bg-white  p-1" :key="index" :index="'men' + index" >
                         <div v-if="item.tipo == 'sec'">
@@ -104,6 +104,7 @@
                                 item.ruta.length > 0 ||
                                 item.base64.length > 0
                                 "
+                                @load="redimencionarDivs()"
                                 style="width: 90%"
                                 v-bind:src="
                                 item.ruta.length > 0
@@ -150,7 +151,8 @@ export default {
                 verModalImagenes:false,
                 enviandoInfo:false,
                 guardado:false,
-                guardandoInfo:false
+                guardandoInfo:false,
+                verSeccion:false,
             },
             seccion:'',
             errores:{
@@ -170,7 +172,9 @@ export default {
             }
             var id = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
             id = id + 1;
-            this.elementos.push( {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:id});
+            this.elementos.push( {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:0});
+            this.seccion = "";
+            this.status.verSeccion = false;
         },
         async EditarElemento(id, indexElemento)
         {
@@ -262,12 +266,12 @@ export default {
                 var minimoAlto = 0;
                 datos.forEach(element => {
 
-                    if (element.tipo =="p")
+                    if (element.tipo =="p" || element.tipo == "sec")
                     {
                         this.elementos.push({id: element.id, html:element.html, tipo:element.tipo, eliminar:false, idGuardado : element.id});
                     }
                     
-                    if (element.tipo == "img")
+                    if (element.tipo == "img" || element.tipo == "imgprod")
                     {
                         this.elementos.push({id: element.id, ruta:element.html, rutaserver:element.rutaserver, tipo:element.tipo, eliminar:false, idGuardado : element.id});
                     }
@@ -405,21 +409,27 @@ export default {
             return null;
             
         },
+        redimencionarDivs()
+        {
+            var minimoAlto = 0;
+            this.$nextTick(()=>{
+                this.elementos.forEach(element => {
+                    console.log('elemento' +  element.id)
+                    var dom = document.getElementById('elemento' + element.id);
+                    console.log("docum", dom);
+                    minimoAlto = dom.clientHeight;
+                    var divborrar = document.getElementById('divborrar'+ element.id);
+                    divborrar.style.minHeight = minimoAlto + 5 + 'px';
+                    console.log(divborrar.style.minHeight);
+                });
+            });
+        }
         
     },
     async mounted() {
         await this.ObtenerArchive();
-        var minimoAlto = 0;
-        this.$nextTick(()=>{
-            this.elementos.forEach(element => {
-                console.log('elemento' +  element.id)
-                var dom = document.getElementById('elemento' + element.id);
-                console.log("docum", dom);
-                minimoAlto = dom.clientHeight;
-                var divborrar = document.getElementById('divborrar'+ element.id);
-                divborrar.style.minHeight = minimoAlto + 5 + 'px';
-            });
-        });
+        this.redimencionarDivs();
+        
     },
 }
 </script>
