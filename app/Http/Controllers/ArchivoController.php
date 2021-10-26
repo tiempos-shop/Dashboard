@@ -72,9 +72,16 @@ class ArchivoController extends Controller
                 if ($info["tipo"] == "p")
                 {
                     $archivoBD->html =  $info["html"];
-                    $archivoBD->tipo =  $info["tipo"];      
+                    $archivoBD->tipo =  $info["tipo"];    
+                    $archivoBD->rutaserver = 0;
                 }
 
+                if ($info["tipo"] == "sec")
+                {
+                    $archivoBD->html =  $info["html"];
+                    $archivoBD->tipo =  $info["tipo"];
+                    $archivoBD->rutaserver = 0;
+                }
 
                 $archivoBD->save(); 
             }

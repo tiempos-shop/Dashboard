@@ -14,7 +14,7 @@ class MenusController extends Controller
      */
     public function index()
     {
-        $listaMenus = menus::get();
+        $listaMenus = menus::orderBy('orden')->get();
 
         return $listaMenus;
     }
@@ -29,6 +29,21 @@ class MenusController extends Controller
         //
     }
 
+    public function guardarlista(Request $request)
+    {
+        //return response()->json($request[0]);
+        $cantidad =count($request->menus);
+        $cantidad = $cantidad;
+
+        for ($i=0; $i < $cantidad; $i++) { 
+            $dato =$request->menus[$i];
+            $menu = menus::where('idMenu', $dato["idMenu"])->first();
+            $menu->orden = $dato["orden"];
+            $menu->save();
+        }
+
+        return 1;
+    }
     /**
      * Store a newly created resource in storage.
      *

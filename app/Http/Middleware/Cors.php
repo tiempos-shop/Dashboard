@@ -18,7 +18,7 @@ class Cors
         $tiendaUrl = env("URL_SHOP");
         $tiendaUrl = substr($tiendaUrl, 0, -1);
         return $next($request)
-        ->header("Access-Control-Allow-Origin", $tiendaUrl)
+        ->header("Access-Control-Allow-Origin", "*")
         //Métodos que a los que se da acceso
         ->header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         //Headers de la petición

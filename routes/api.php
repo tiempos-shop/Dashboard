@@ -80,6 +80,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::post('login/facebook', 'LoginController@inicioFacebook');
 
     Route::resource('menus', 'MenusController');
+    Route::post('menus/guardarlista', 'MenusController@guardarlista');
 
     Route::get('principal/inicio', 'PrincipalController@inicio');
 
