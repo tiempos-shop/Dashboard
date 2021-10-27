@@ -83,6 +83,7 @@ class MenusController extends Controller
             $menuRow = new menus();
         }
         $menuRow->menu = $menu;
+        $menuRow->orden = menus::count('idMenu') + 1;
         $menuRow->save();
 
         return $menuRow;

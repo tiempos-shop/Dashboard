@@ -60,7 +60,9 @@ Vue.component('configindex', require('./components/config/ConfigIndex.vue').defa
     return formatter.format(value);
 });
 
-Vue.prototype.server = 'http://127.0.0.1:8000/';
+//Vue.prototype.server = 'http://127.0.0.1:8000/';
+
+Vue.prototype.server = 'https://tiempos.shop/adminshop/public/';
 
 const app = new Vue({
     el: '#app',

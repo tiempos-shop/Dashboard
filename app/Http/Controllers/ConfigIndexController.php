@@ -119,11 +119,11 @@ class ConfigIndexController extends Controller
         $datos = new \stdClass();
         $datos->appUrl = $appUrl;
         $datos->configuraciones = $configuraciones;
-        /*
+        
         foreach ($configuraciones as $config) {
             $config->activo = ($config->activo == 1  ? true : false);
         }
-        */
+        
         return response()->json($datos);
     }
 }
