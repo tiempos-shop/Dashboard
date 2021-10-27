@@ -145,7 +145,14 @@
                         <div> <strong>Precio</strong> </div>
 
                     </div>
-                    <div class="col-md-6 mt-2">
+                    <div class="col-md-12 mt-2">
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="descuento" v-model="descuento"
+                                @click="descuento = false;producto.precioComparativo=producto.precio">
+                            <label class="form-check-label" for="descuento"><strong>¿Manejará decuento?</strong></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2" v-if="descuento">
                         <div>Precio de Descuento</div>
                         <input class="form-control" type="text" v-model="producto.precio">
                         <div class="btn  text-white p-1" :style="peligro" v-if="errores.precio.length > 0">
@@ -460,9 +467,11 @@ export default {
                 coleccion:'',
                 idTipo:0,
                 tipo:'',
-                idMenu:0
+                idMenu:0,
+                
 
             },
+            descuento:true,
             rutaGuiaTallas: {base64 :'', ruta:''},
             english:{
                 idProductoIdioma:0,
