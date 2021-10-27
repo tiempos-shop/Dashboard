@@ -24,18 +24,8 @@
                         
                     </button>
                 </div>
-                <div class="col-md-2">
-                    <button @click="AgregarElementoTexto('youtube')"
-                        class="btn bg-white"  
-                        style="color:green"
-                        >
-                        <span  class="pr-2"> 
-                            <i class="fas fa-video" >  </i>
-                        </span>
-                        <strong class="text-dark">Youtube</strong>
-                    </button>
-                </div>
-                <div class="col-md-2">
+       
+                <div class="col-md-3">
                     <div class="custom-file bg-white" style="display: contents; ">
                         <input
                         type="file"
@@ -43,7 +33,7 @@
                         id="SubirImg1"
                         accept="image/x-png,image/jpeg"
                         class="custom-file-input mb-2 bg-white"
-                        style="width: 1%; height: 0 !important; "
+                        style="width: 1%; height: 0 !important; display: none;"
                         placeholder="Imagen guia de tallas"
                         ref="SubirImg1"
                         />
@@ -56,18 +46,20 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <button class="btn bg-white" @click="status.verModalImagenes = true">Imagenes Productos</button>
+                <div class="col-md-4">
+                    <button class="btn bg-white" @click="status.verModalImagenes = true"> <span style="color:blue;"><i class="fas fa-images"></i></span> <span>Imagenes Productos</span></button>
                 </div>
                 <div class="col-md-3">
                     <button class="btn bg-white" @click="status.verSeccion = true;">
-                        Texto Sección
+                        <span style="color:green;"><i class="fas fa-hand-pointer"></i></span>
+                        <span>Texto Sección</span>
                     </button>
                 </div>
             </div>
             <div class="col-md-8 p-2 row" v-if="status.verSeccion">
                 <input type="text" class="form-control col-md-8" v-model="seccion" maxlength="15" v-on:input="seccion =seccion.toUpperCase()" placeholder="Agregar Texto de Sección">
-                <button class="btn btn-primary"  @click="AgregarSeccion()">Agregar</button>
+                <button class="btn btn-primary" v-if="idSeccion == 0" @click="AgregarSeccion()">Agregar Seccion</button>
+                <button class="btn btn-primary" v-if="idSeccion > 0" @click="AgregarSeccion()">Actualizar Seccion</button>
             </div>
             <div class="col-md-4">
                 <button class="btn btn-primary btn-block" @click="GuardarArchive()"
@@ -79,13 +71,7 @@
                 </div>
             </div>
             <div class="col-md-1">
-                <div id="t" style="position: fixed;top: 50vh;">
-                    <div v-for="(item, index) in elementos" class="bg-white  p-1" :key="index" :index="'men' + index" >
-                        <div v-if="item.tipo == 'sec'">
-                            <span style="border-top: 1px solid black; border-bottom: 1px solid black;">{{item.html}}</span>
-                        </div>
-                    </div>                 
-                </div>
+           
    
             </div>
             <div class="col-md-8 bg-light text-dark mt-4" id="contenedor" style="min-height:20px;">
@@ -114,8 +100,8 @@
                                 alt="imagen" />
                         </div>
 
-                        <div v-if="item.tipo == 'sec'">
-                            <span style="border-top: 1px solid black; border-bottom: 1px solid black;">{{item.html}}</span>
+                        <div v-if="item.tipo == 'sec'" style="border-top: 1px solid black;">
+                            <span style=" border-bottom: 1px solid black;">{{item.html}}</span>
                         </div>
                     </div>
                     
@@ -124,9 +110,11 @@
             </div>
             <div class="col-md-2 mt-4" >
                 <div v-for="(item, index) in elementos" :key="index" >
-                    <div :id="'divborrar' + item.id" v-if="!item.eliminar">
-                        <button class="btn btn-primary p-1 m-0" :id="'editar' + item.id" :ref="'editar' + index"  @click="EditarElemento(item.id, index)">Editar</button>
-                        <button class="btn btn-danger p-1 m-0" :id="'borrar' + item.id" :ref="'borrar' + index"  @click="item.eliminar = true;">Borrar</button>
+                    <div :id="'divborrar' + item.id" v-if="!item.eliminar" class="p-1">
+                        <button class="btn btn-primary p-0 m-0 mr-2" :id="'editar' + item.id" :ref="'editar' + index"
+                            v-if="item.tipo != 'img' && item.tipo != 'imgprod'"
+                            @click="EditarElemento(item.id, index)">Editar</button>
+                        <button class="btn btn-danger p-0 m-0" :id="'borrar' + item.id" :ref="'borrar' + index"  @click="item.eliminar = true;">Borrar</button>
                     </div>
                     
  
@@ -155,6 +143,8 @@ export default {
                 verSeccion:false,
             },
             seccion:'',
+            idSeccion:0,
+            indexSeccion: -1,
             errores:{
                 sistema:'',
             }
@@ -166,15 +156,34 @@ export default {
     methods: {
         AgregarSeccion()
         {
+            var id = 0;
             if (this.seccion.length == 0)
             {
                 return;
             }
-            var id = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
-            id = id + 1;
-            this.elementos.push( {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:0});
-            this.seccion = "";
+            
+            if (this.idSeccion == 0)
+            {
+                id = Math.max.apply(Math, this.elementos.map(function(o) { return o.id; }));
+                id = id + 1;
+                this.elementos.push( {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:0});
+            }
+            if (this.idSeccion > 0)
+            {
+                id  = this.idSeccion;
+                var registro = {id:id, html:this.seccion, tipo:'sec', eliminar:false, idGuardado:id};
+                this.$set(this.elementos, this.indexSeccion, registro); 
+            }
+            
+            this.RestaurarSeccion();
+            
             this.status.verSeccion = false;
+        },
+        RestaurarSeccion()
+        {
+            this.seccion = "";
+            this.idSeccion = 0;
+            this.indexSeccion = -1;
         },
         async EditarElemento(id, indexElemento)
         {
@@ -202,11 +211,19 @@ export default {
                         minimoAlto = dom.clientHeight;
                         var divborrar = document.getElementById('divborrar'+ index);
                         divborrar.style.minHeight = minimoAlto + 5 + 'px';
-
-                        console.log(dom.clientHeight); 
+ 
                     });
                     
                 }
+            }
+
+            if (tipo == "sec")
+            {
+                this.idSeccion = id;
+                this.seccion = elemento.html;
+                this.indexSeccion= indexElemento;
+                this.status.verSeccion = true;
+                window.scroll({ top: 30, behavior: 'smooth' });
             }
         },
         async AgregarImagen(nombre)
@@ -250,8 +267,6 @@ export default {
             var divborrar = document.getElementById('divborrar'+ index);
             divborrar.style.minHeight = minimoAlto + 9 + 'px';
 
-            console.log(dom.clientHeight); 
-
             return 1;
             
         },
@@ -261,7 +276,7 @@ export default {
 
             await axios.get(this.server + "api/archivo")
             .then((resultado) => {
-                console.log("resultado", resultado.data);
+                
                 var datos = resultado.data;
                 var minimoAlto = 0;
                 datos.forEach(element => {
@@ -290,7 +305,7 @@ export default {
             this.status.guardandoInfo = true;
 
             var html = document.getElementById('contenedor').innerHTML;
-            console.log(html);
+            
 
             var datos = { elementos: this.elementos};
             await axios.post(this.server + "api/archivo",  datos)
@@ -299,6 +314,7 @@ export default {
                 if (resultado.data == 1)
                 {
                     this.status.guardado = true;
+                    location.reload();
                 }
             }).catch((problema) => {
                 console.log(problema);
@@ -328,7 +344,6 @@ export default {
                         var divborrar = document.getElementById('divborrar'+ index);
                         divborrar.style.minHeight = minimoAlto + 5 + 'px';
 
-                        console.log(dom.clientHeight); 
                     });
                     
                 }
@@ -353,16 +368,16 @@ export default {
                     var divborrar = document.getElementById('divborrar'+ index);
                     divborrar.style.minHeight = minimoAlto + 5 + 'px';
 
-                    console.log(dom.clientHeight); 
+                    
                 });
             }
-            
+
             
         },
         Eliminar(index, id)
         {
             var elemento = this.elementos.find((ele) => ele.id == id);
-            console.log(elemento);
+            
             if (elemento != null)
             {
                 elemento.eliminar = true;
@@ -374,12 +389,12 @@ export default {
         AltoElemento(index)
         {
             setTimeout(function(){   }, 3000); 
-            console.log(index);
+            
             this.$nextTick(()=>{
                 if (document.getElementById('el' + index) != null)
                 {
                     var alto = (document.getElementById('el' + index).style.height == null ? '100' : document.getElementById('el' + index).style.height );
-                    console.log(alto);
+                    
                 }
                 
             });
@@ -414,13 +429,13 @@ export default {
             var minimoAlto = 0;
             this.$nextTick(()=>{
                 this.elementos.forEach(element => {
-                    console.log('elemento' +  element.id)
+                    
                     var dom = document.getElementById('elemento' + element.id);
-                    console.log("docum", dom);
+                    
                     minimoAlto = dom.clientHeight;
                     var divborrar = document.getElementById('divborrar'+ element.id);
                     divborrar.style.minHeight = minimoAlto + 5 + 'px';
-                    console.log(divborrar.style.minHeight);
+                    
                 });
             });
         }
@@ -430,6 +445,12 @@ export default {
         await this.ObtenerArchive();
         this.redimencionarDivs();
         
+    },
+    created() {
+        window.addEventListener("resize", this.redimencionarDivs);
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.redimencionarDivs);
     },
 }
 </script>
