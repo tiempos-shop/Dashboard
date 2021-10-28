@@ -1,5 +1,5 @@
 @extends('layout')
 
 @section('content')
-    <editor></editor>
+    <ListaVideo></ListaVideo>
 @endsection

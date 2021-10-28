@@ -124,3 +124,7 @@ Route::get('/menus', function(){
 Route::get('/editor', function(){
     return view('archive.editor');
 });
+
+Route::get('/ListaVideos', function(){
+    return view('archive.videos');
+});
